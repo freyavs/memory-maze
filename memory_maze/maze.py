@@ -130,7 +130,7 @@ class MemoryMazeTask(random_goal_maze.NullGoalMaze):
                 self._maze_arena.regenerate(rng)
                 continue
             break
-        self._pick_new_target(rng)
+        self._pick_new_target(rng, True)
 
     def initialize_episode(self, physics, rng: RandomState):
         super().initialize_episode(physics, rng)
@@ -166,7 +166,10 @@ class MemoryMazeTask(random_goal_maze.NullGoalMaze):
             mjcf.get_attachment_frame(target.mjcf_model).pos = pos
         return True
 
-    def _pick_new_target(self, rng: RandomState):
+    def _pick_new_target(self, rng: RandomState, initialization =  False):
+        # for custom level: if there's only 1 target in the maze, don't set different target, let episode restart
+        if not initialization and len(self._targets) == 1:
+            return
         while True:
             ix = rng.randint(len(self._targets))
             if self._targets[ix].activated:

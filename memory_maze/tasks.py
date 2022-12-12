@@ -10,6 +10,8 @@ from memory_maze.wrappers import *
 # Native control would be ~20Hz, so this corresponds roughly to action_repeat=5.
 DEFAULT_CONTROL_FREQ = 4.0
 
+def memory_maze_custom(**kwargs):
+    return _memory_maze(9, 1, 20, max_rooms=1, room_min_size=9, room_max_size=9, **kwargs)
 
 def memory_maze_9x9(**kwargs):
     """
@@ -126,8 +128,9 @@ def _memory_maze(
 
     env = RemapObservationWrapper(env, obs_mapping)
 
-    if target_color_in_image:
-        env = TargetColorAsBorderWrapper(env)
+    # uncomment if you want a border
+    # if target_color_in_image:
+        # env = TargetColorAsBorderWrapper(env)
 
     if show_path:
         env = PathToTargetWrapper(env)

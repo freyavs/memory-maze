@@ -35,7 +35,7 @@ def get_keymap(env):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--env', type=str, default='memory_maze:MemoryMaze-9x9-v0')
+    parser.add_argument('--env', type=str, default='memory_maze:MemoryMaze-custom-HD-v0')
     parser.add_argument('--size', type=int, nargs=2, default=(600, 600))
     parser.add_argument('--fps', type=int, default=6)
     parser.add_argument('--random', type=float, default=0.0)
@@ -50,7 +50,7 @@ def main():
     window_size = (render_size[0] + PANEL_LEFT + PANEL_RIGHT, render_size[1])
 
     print(f'Creating environment: {args.env}')
-    env = gym.make(args.env, disable_env_checker=True)
+    env = gym.make(args.env) # disable_env_checker=True)
 
     if isinstance(env.observation_space, spaces.Dict):
         print('Observation space:')

@@ -24,6 +24,7 @@ try:
         return GymWrapper(dmenv)
 
     sizes = {
+        'custom': tasks.memory_maze_custom,
         '9x9': tasks.memory_maze_9x9,
         '11x11': tasks.memory_maze_11x11,
         '13x13': tasks.memory_maze_13x13,
