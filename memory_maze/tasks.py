@@ -11,7 +11,7 @@ from memory_maze.wrappers import *
 DEFAULT_CONTROL_FREQ = 4.0
 
 def memory_maze_custom(**kwargs):
-    return _memory_maze(9, 1, 20, max_rooms=1, room_min_size=9, room_max_size=9, **kwargs)
+    return _memory_maze(3, 1, 1000, max_rooms=1, room_min_size=3, room_max_size=3, **kwargs)
 
 def memory_maze_9x9(**kwargs):
     """
