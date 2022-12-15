@@ -1,14 +1,19 @@
 import numpy as np
 import gym
-
+from stable_baselines3 import DQN
 
 env = gym.make("memory_maze:MemoryMaze-custom-v0")
 
-# First reset the env to get the initial observation
-obs = env.reset()
-#_ = vis_image(obs, show=True)
+model = DQN("MlpPolicy", env, verbose=1)
+model.learn(total_timesteps=1000, log_interval=10)
 
-# Next do three steps and plot the observation (by calling  env.step(action) )
-for i in range(3):
-    obs, reward, terminal, _ = env.step(3)
-    #_ = vis_image(obs, show=True)
+# saving and loading demonstration
+#model.save("deepq_maze")
+#del model # remove to demonstrate saving and loading
+#model = DQN.load("deepq_cartpole")
+
+obs = env.reset()
+while True:
+    action, _states = model.predict(obs)
+    obs, rewards, dones, info = env.step(action)
+    env.render()
