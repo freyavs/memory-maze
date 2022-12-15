@@ -19,7 +19,6 @@ class GymWrapper(gym.Env):
         return ts.observation
 
     def step(self, action) -> Tuple[Any, float, bool, dict]:
-        print(action)
         ts = self.env.step(action)
         assert not ts.first(), "dm_env.step() caused reset, reward will be undefined."
         assert ts.reward is not None
