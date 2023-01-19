@@ -24,12 +24,10 @@ K_NONE = tuple()
 
 def get_keymap(env):
     return {
-        tuple(): 0,
-        (pygame.K_UP, ): 1,
-        (pygame.K_LEFT, ): 2,
-        (pygame.K_RIGHT, ): 3,
-        (pygame.K_UP, pygame.K_LEFT): 4,
-        (pygame.K_UP, pygame.K_RIGHT): 5,
+        #tuple(): 0,
+        (pygame.K_UP, ): 0,
+        (pygame.K_LEFT, ): 1,
+        (pygame.K_RIGHT, ): 2,
     }
 
 
@@ -129,52 +127,59 @@ def main():
 
         # Keyboard input
 
-        pygame.event.pump()
-        keys_down = defaultdict(bool)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:  # Close
+        action = None
+        while action is None:
+            pygame.event.pump()
+            keys_down = defaultdict(bool)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:  # Close
+                    running = False
+                    break
+                if event.type == pygame.KEYDOWN:
+                    keys_down[event.key] = True
+            keys_hold = pygame.key.get_pressed()
+
+            # Action keys
+            for keys, act in keymap.items():
+                if all(keys_hold[key] or keys_down[key] for key in keys):
+                    # The last keymap entry which has all keys pressed wins
+                    action = act
+
+            # Special keys
+            force_reset = False
+            speedup = False
+            if keys_down[pygame.K_ESCAPE]:  # Quit
                 running = False
-            if event.type == pygame.KEYDOWN:
-                keys_down[event.key] = True
-        keys_hold = pygame.key.get_pressed()
+                break
+            if keys_down[pygame.K_SPACE]:  # Pause
+                paused = not paused
+                break
+            else:
+                if action:
+                    paused = False  # unpause on action press
+            if keys_down[pygame.K_BACKSPACE]:  # Force reset
+                force_reset = True
+                break
+            if keys_hold[pygame.K_TAB]:
+                speedup = True
+                break
 
-        # Action keys
-        action = keymap[K_NONE]  # noop, if no keys pressed
-        for keys, act in keymap.items():
-            if all(keys_hold[key] or keys_down[key] for key in keys):
-                # The last keymap entry which has all keys pressed wins
-                action = act
-
-        # Special keys
-        force_reset = False
-        speedup = False
-        if keys_down[pygame.K_ESCAPE]:  # Quit
-            running = False
-        if keys_down[pygame.K_SPACE]:  # Pause
-            paused = not paused
-        else:
-            if action != keymap[K_NONE]:
-                paused = False  # unpause on action press
-        if keys_down[pygame.K_BACKSPACE]:  # Force reset
-            force_reset = True
-        if keys_hold[pygame.K_TAB]:
-            speedup = True
+            if args.random:
+                if np.random.random() < args.random:
+                    action = env.action_space.sample()
 
         if paused:
             continue
-        if action == keymap[K_NONE] and args.nonoop and not force_reset:
+        if action is None and args.nonoop and not force_reset:
             continue
 
         # Environment step
 
-        if args.random:
-            if np.random.random() < args.random:
-                action = env.action_space.sample()
-
-        obs, reward, done, info = env.step(action)  # type: ignore
-        # print({k: v for k, v in obs.items() if k != 'image'})
-        steps += 1
-        return_ += reward
+        if action is not None:
+            obs, reward, done, info = env.step(action)  # type: ignore
+            # print({k: v for k, v in obs.items() if k != 'image'})
+            steps += 1
+            return_ += reward
 
         # Episode end
 

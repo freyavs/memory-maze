@@ -1,5 +1,6 @@
 import functools
 import string
+import math
 
 import labmaze
 import numpy as np
@@ -234,7 +235,7 @@ class MazeWithTargetsArena(mazes.MazeWithTargets):
                random_seed=None):
         assert random_seed, "Expected to be set by tasks._memory_maze()"
         super()._build(
-            maze=TextMazeVaryingWalls(
+            maze=labmaze.RandomMaze(
                 height=y_cells,
                 width=x_cells,
                 max_rooms=max_rooms,
@@ -261,6 +262,13 @@ class MazeWithTargetsArena(mazes.MazeWithTargets):
         self._maze.regenerate()
         # logging.debug('GENERATED MAZE:\n%s', self._maze.entity_layer)
         self._find_spawn_and_target_positions()
+
+        # solves bug where target spawns "too close" to agent (TODO: find a better solution)
+        target_position_distance = math.dist(self._spawn_grid_positions[0],self._target_grid_positions[0])
+        while target_position_distance < 1.5:
+            self._maze.regenerate()
+            self._find_spawn_and_target_positions()
+            target_position_distance = math.dist(self._spawn_grid_positions[0],self._target_grid_positions[0])
 
         if self._text_maze_regenerated_hook:
             self._text_maze_regenerated_hook()

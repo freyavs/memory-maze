@@ -67,12 +67,13 @@ def _memory_maze(
     camera_resolution=64,
     seed=None,
 ):
+
     random_state = np.random.RandomState(seed)
     walker = RollingBallWithFriction(camera_height=0.3, add_ears=top_camera)
     arena = MazeWithTargetsArena(
         x_cells=maze_size + 2,  # inner size => outer size
         y_cells=maze_size + 2,
-        xy_scale=2.0,
+        xy_scale=1.5,
         z_height=1.5 if not good_visibility else 0.4,
         max_rooms=max_rooms,
         room_min_size=room_min_size,
@@ -81,8 +82,8 @@ def _memory_maze(
         targets_per_room=1,
         floor_textures=FixedFloorTexture('style_01', ['blue', 'blue_bright']),
         wall_textures=dict({
-            '*': FixedWallTexture('style_01', 'yellow'),  # default wall
-        }, **{str(i): labmaze_textures.WallTextures('style_01') for i in range(10)}  # variations
+            '*': FixedWallTexture('style_03', 'gray'),  # default wall
+        }, **{str(i): labmaze_textures.WallTextures('style_03') for i in range(10)}  # variations
         ),
         skybox_texture=None,
         random_seed=random_state.randint(2147483648),
@@ -142,12 +143,9 @@ def _memory_maze(
 
     if discrete_actions:
         env = DiscreteActionSetWrapper(env, [
-            np.array([0.0, 0.0]),  # noop
             np.array([-1.0, 0.0]),  # forward
             np.array([0.0, -1.0]),  # left
             np.array([0.0, +1.0]),  # right
-            np.array([-1.0, -1.0]),  # forward + left
-            np.array([-1.0, +1.0]),  # forward + right
         ])
 
     return env
