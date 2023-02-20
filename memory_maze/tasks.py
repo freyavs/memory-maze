@@ -11,7 +11,7 @@ from memory_maze.wrappers import *
 DEFAULT_CONTROL_FREQ = 4.0
 
 def memory_maze_custom(**kwargs):
-    return _memory_maze(3, 1, 25, max_rooms=1, room_min_size=3, room_max_size=3, **kwargs)
+    return _memory_maze(5, 1, 25, max_rooms=1, room_min_size=5, room_max_size=5, **kwargs)
 
 def memory_maze_9x9(**kwargs):
     """
@@ -82,8 +82,8 @@ def _memory_maze(
         targets_per_room=1,
         floor_textures=FixedFloorTexture('style_01', ['blue', 'blue_bright']),
         wall_textures=dict({
-            '*': FixedWallTexture('style_03', 'gray'),  # default wall
-        }, **{str(i): labmaze_textures.WallTextures('style_03') for i in range(10)}  # variations
+            '*': FixedWallTexture('style_01', 'yellow'),  # default wall
+        }, **{str(i): labmaze_textures.WallTextures('style_01') for i in range(10)}  # variations
         ),
         skybox_texture=None,
         random_seed=random_state.randint(2147483648),

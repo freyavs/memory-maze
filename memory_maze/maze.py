@@ -235,7 +235,7 @@ class MazeWithTargetsArena(mazes.MazeWithTargets):
                random_seed=None):
         assert random_seed, "Expected to be set by tasks._memory_maze()"
         super()._build(
-            maze=labmaze.RandomMaze(
+            maze=TextMazeVaryingWalls(
                 height=y_cells,
                 width=x_cells,
                 max_rooms=max_rooms,

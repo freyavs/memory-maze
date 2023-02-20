@@ -5,6 +5,7 @@ import dm_env
 import gym
 from dm_env import specs
 from gym import spaces
+import cv2
 
 
 class GymWrapper(gym.Env):
@@ -13,13 +14,24 @@ class GymWrapper(gym.Env):
         self.env = env
         self.action_space = _convert_to_space(env.action_spec())
         self.observation_space = _convert_to_space(env.observation_spec())
+        self.state = None
 
     def reset(self) -> Any:
         ts = self.env.reset()
+        self.state = ts.observation
         return ts.observation
+    
+    def render(self, mode = "human"):
+        if mode == "human":
+            rgb_state = cv2.cvtColor(self.state, cv2.COLOR_BGR2RGB)
+            cv2.imshow("Environment state", rgb_state)
+            cv2.waitKey(0)
+        else:
+            print(self.state)
 
     def step(self, action) -> Tuple[Any, float, bool, dict]:
         ts = self.env.step(action)
+        self.state = ts.observation
         assert not ts.first(), "dm_env.step() caused reset, reward will be undefined."
         assert ts.reward is not None
         done = ts.last() or ts.reward == 1 # reset when time is up or target is reached
