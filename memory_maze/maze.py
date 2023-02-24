@@ -260,6 +260,7 @@ class MazeWithTargetsArena(mazes.MazeWithTargets):
         Patch of MazeWithTargets.regenerate() which uses random_state.
         """
         self._maze.regenerate()
+        # print(self._maze.entity_layer)
         # logging.debug('GENERATED MAZE:\n%s', self._maze.entity_layer)
         self._find_spawn_and_target_positions()
 
@@ -287,8 +288,8 @@ class MazeWithTargetsArena(mazes.MazeWithTargets):
         self._maze_body.geom.clear()
 
         self._current_wall_texture = {
-            wall_char: random_state.choice(wall_textures)  # PATCH: use random_state for wall textures
-            for wall_char, wall_textures in self._wall_textures.items()
+            wall_char: (wall_textures[i%8])  # PATCH: use random_state for wall textures
+            for i, (wall_char, wall_textures) in enumerate(self._wall_textures.items())
         }
 
         for wall_char in self._wall_textures:
