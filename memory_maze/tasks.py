@@ -11,7 +11,7 @@ from memory_maze.wrappers import *
 DEFAULT_CONTROL_FREQ = 4.0
 
 def memory_maze_custom(**kwargs):
-    return _memory_maze(5, 1, 25, max_rooms=1, room_min_size=5, room_max_size=5, **kwargs)
+    return _memory_maze(5, 1, 200, max_rooms=1, room_min_size=5, room_max_size=5, **kwargs)
 
 def memory_maze_9x9(**kwargs):
     """
@@ -143,9 +143,9 @@ def _memory_maze(
 
     if discrete_actions:
         env = DiscreteActionSetWrapper(env, [
-            np.array([-1.0, 0.0]),  # forward
-            np.array([0.0, -1.0]),  # left
-            np.array([0.0, +1.0]),  # right
+            np.array([-0.5, 0.0]),  # forward
+            np.array([0.0, -0.5]),  # left
+            np.array([0.0, +0.5]),  # right
         ])
 
     return env

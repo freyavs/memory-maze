@@ -159,6 +159,8 @@ class MemoryMazeTask(random_goal_maze.NullGoalMaze):
 
     def _place_targets(self, rng: RandomState) -> bool:
         possible_positions = list(self._maze_arena.target_positions)
+        # print(f" targets = {self._maze_arena.target_positions}")
+        # print(f" player = {self._maze_arena.spawn_positions}")
         rng.shuffle(possible_positions)
         if len(possible_positions) < len(self._targets):
             # Too few rooms - need to regenerate the maze
@@ -254,22 +256,22 @@ class MazeWithTargetsArena(mazes.MazeWithTargets):
             aesthetic=aesthetic,
             name=name)
 
-    def regenerate(self, random_state):
+    def regenerate(self, random_state = None):
         """Generates a new maze layout.
         
         Patch of MazeWithTargets.regenerate() which uses random_state.
         """
         self._maze.regenerate()
-        # print(self._maze.entity_layer)
         # logging.debug('GENERATED MAZE:\n%s', self._maze.entity_layer)
         self._find_spawn_and_target_positions()
 
-        # solves bug where target spawns "too close" to agent (TODO: find a better solution)
-        target_position_distance = math.dist(self._spawn_grid_positions[0],self._target_grid_positions[0])
-        while target_position_distance < 1.5:
+        # solves bug where target spawns "too close" to agent (TODO: find a better solution?)
+        # target_position_distance = math.dist(self._spawn_grid_positions[0],self._target_grid_positions[0])
+        not_valid = not self._target_positions[0].any()
+        while not_valid:
             self._maze.regenerate()
             self._find_spawn_and_target_positions()
-            target_position_distance = math.dist(self._spawn_grid_positions[0],self._target_grid_positions[0])
+            not_valid = not self._target_positions[0].any()
 
         if self._text_maze_regenerated_hook:
             self._text_maze_regenerated_hook()
@@ -287,10 +289,10 @@ class MazeWithTargetsArena(mazes.MazeWithTargets):
         # Remove old actual-wall geoms.
         self._maze_body.geom.clear()
 
-        self._current_wall_texture = {
-            wall_char: (wall_textures[i%8])  # PATCH: use random_state for wall textures
-            for i, (wall_char, wall_textures) in enumerate(self._wall_textures.items())
-        }
+        self._current_wall_texture = dict()
+        # non-randomized wall textures are easier for learning
+        for i, (wall_char, wall_textures) in enumerate(self._wall_textures.items()):
+            self._current_wall_texture[wall_char] = wall_textures[i%8 if i != 6 else 7]
 
         for wall_char in self._wall_textures:
             self._make_wall_geoms(wall_char)
