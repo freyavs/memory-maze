@@ -76,6 +76,8 @@ class MemoryMazeTask(random_goal_maze.NullGoalMaze):
         self._current_target_ix = 0
         self._rewarded_this_step = False
         self._targets_obtained = 0
+        self._current_reward = 0.0
+        self._last_distance_from_target = 0
 
         if enable_global_task_observables:
             # Add egocentric vectors to targets
@@ -136,23 +138,41 @@ class MemoryMazeTask(random_goal_maze.NullGoalMaze):
     def initialize_episode(self, physics, rng: RandomState):
         super().initialize_episode(physics, rng)
         self._rewarded_this_step = False
+        self._current_reward = 0
         self._targets_obtained = 0
 
     def after_step(self, physics, rng: RandomState):
         super().after_step(physics, rng)
+        relative_pos = self._walker.observables._observables['target_rel_0'](physics)
+        target_distance = math.dist([0,0], relative_pos[:2])
         self._rewarded_this_step = False
-        for i, target in enumerate(self._targets):
+
+        # for custom level with 1 target, add custom reward
+        if len(self._targets) == 1:
+            target = self._targets[0]
+            self._rewarded_this_step = True
             if target.activated:
-                if i == self._current_target_ix:
-                    self._rewarded_this_step = True
-                    self._targets_obtained += 1
-                    self._pick_new_target(rng)
-                target.reset(physics)  # Resets activated=False
+                self._current_reward = self._target_reward_scale * 1
+                target.reset(physics)
+            else:
+                self._current_reward = self._target_reward_scale * (self._last_distance_from_target - target_distance)
+                self._last_distance_from_target = target_distance
+                
+        else: 
+            for i, target in enumerate(self._targets):
+                if target.activated:
+                    if i == self._current_target_ix:
+                        self._rewarded_this_step = True
+                        self._targets_obtained += 1
+                        self._pick_new_target(rng)
+                    target.reset(physics)  # Resets activated=False
 
     def should_terminate_episode(self, physics):
         return super().should_terminate_episode(physics)
 
     def get_reward(self, physics):
+        if self._current_reward:
+            return self._current_reward
         if self._rewarded_this_step:
             return self._target_reward_scale
         return 0.0
@@ -266,7 +286,6 @@ class MazeWithTargetsArena(mazes.MazeWithTargets):
         self._find_spawn_and_target_positions()
 
         # solves bug where target spawns "too close" to agent (TODO: find a better solution?)
-        # target_position_distance = math.dist(self._spawn_grid_positions[0],self._target_grid_positions[0])
         not_valid = not self._target_positions[0].any()
         while not_valid:
             self._maze.regenerate()
