@@ -140,6 +140,8 @@ class MemoryMazeTask(random_goal_maze.NullGoalMaze):
         self._rewarded_this_step = False
         self._current_reward = 0
         self._targets_obtained = 0
+        relative_pos = self._walker.observables._observables['target_rel_0'](physics)
+        self._last_distance_from_target = math.dist([0,0], relative_pos[:2])
 
     def after_step(self, physics, rng: RandomState):
         super().after_step(physics, rng)
@@ -152,7 +154,7 @@ class MemoryMazeTask(random_goal_maze.NullGoalMaze):
             target = self._targets[0]
             self._rewarded_this_step = True
             if target.activated:
-                self._current_reward = self._target_reward_scale * 1
+                self._current_reward = self._target_reward_scale * 15 
                 target.reset(physics)
             else:
                 self._current_reward = self._target_reward_scale * (self._last_distance_from_target - target_distance)
