@@ -34,7 +34,7 @@ class GymWrapper(gym.Env):
         self.state = ts.observation
         assert not ts.first(), "dm_env.step() caused reset, reward will be undefined."
         assert ts.reward is not None
-        done = ts.last() or ts.reward > 10 # reset when time is up or target is reached
+        done = ts.last() or ts.reward > 100 # reset when time is up or target is reached
         terminal = ts.last() and ts.discount == 0.0
         info = {}
         if done and not terminal:
