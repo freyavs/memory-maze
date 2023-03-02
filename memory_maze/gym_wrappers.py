@@ -16,11 +16,9 @@ class GymWrapper(gym.Env):
         self.observation_space = _convert_to_space(env.observation_spec())
         self.state = None
     
-    @property
     def action_spec(self):
         return self.env.action_spec()
 
-    @property
     def observation_spec(self):
         return self.env.observation_spec()
 
