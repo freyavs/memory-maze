@@ -45,6 +45,11 @@ class GymWrapper(gym.Env):
         info = {}
         if done and not terminal:
             info['TimeLimit.truncated'] = True  # acme.GymWrapper understands this and converts back to dm_env.truncation()
+        info["last"] = ts.last()
+        info["first"] = ts.first()
+        info["discount"] = ts.discount
+        info["done"] = done
+        info["terminal"] = terminal
         return ts.observation, ts.reward, done, info
 
 
