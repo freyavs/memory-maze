@@ -50,6 +50,7 @@ class GymWrapper(gym.Env):
         info["discount"] = ts.discount
         info["done"] = done
         info["terminal"] = terminal
+        info["target_reached"] = ts.reward > 100
         return ts.observation, ts.reward, done, info
 
 
