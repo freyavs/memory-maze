@@ -102,7 +102,7 @@ def _memory_maze(
         enable_global_task_observables=True,  # Always add to underlying env, but not always expose in RemapObservationWrapper
         control_timestep=1.0 / control_freq,
         camera_resolution=camera_resolution,
-        target_reward_scale=20.0,
+        target_reward_scale=3.0,
     )
 
     if top_camera:
