@@ -312,8 +312,8 @@ class MazeWithTargetsArena(mazes.MazeWithTargets):
 
         self._current_wall_texture = dict()
         # non-randomized wall textures are easier for learning
-        for i, (wall_char, wall_textures) in enumerate(self._wall_textures.items()):
-            self._current_wall_texture[wall_char] = wall_textures[i%8 if i != 6 else 7]
+        for _, (wall_char, wall_textures) in enumerate(self._wall_textures.items()):
+            self._current_wall_texture[wall_char] = wall_textures[0]
 
         for wall_char in self._wall_textures:
             self._make_wall_geoms(wall_char)
