@@ -288,13 +288,13 @@ class MazeWithTargetsArena(mazes.MazeWithTargets):
 
         # solves bug where target spawns "too close" to agent (TODO: find a better solution?)
         # TODO: remove if goal has to be random, this is just for sanity check 
-        not_valid = not self._target_positions[0].any()
-        # not_valid = not (self._target_positions[0] == [-3.0,-0.0,0.0]).all()
+        #not_valid = not self._target_positions[0].any()
+        not_valid = not (self._target_positions[0] == [-3.0,-0.0,0.0]).all()
         while not_valid:
             self._maze.regenerate()
             self._find_spawn_and_target_positions()
-            not_valid = not self._target_positions[0].any()
-            #not_valid = not (self._target_positions[0] == [-3.0,-0.0,0.0]).all()
+            #not_valid = not self._target_positions[0].any()
+            not_valid = not (self._target_positions[0] == [-3.0,-0.0,0.0]).all()
 
         if self._text_maze_regenerated_hook:
             self._text_maze_regenerated_hook()
