@@ -13,6 +13,9 @@ DEFAULT_CONTROL_FREQ = 4.0
 def memory_maze_custom(**kwargs):
     return _memory_maze(5, 1, 25, max_rooms=1, room_min_size=5, room_max_size=5, **kwargs, discrete_actions=False)
 
+def memory_maze_custom_discrete(**kwargs):
+    return _memory_maze(5, 1, 25, max_rooms=1, room_min_size=5, room_max_size=5, **kwargs, discrete_actions=True)
+
 def memory_maze_9x9(**kwargs):
     """
     Maze based on DMLab30-explore_goal_locations_small
