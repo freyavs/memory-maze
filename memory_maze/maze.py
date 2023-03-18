@@ -154,11 +154,12 @@ class MemoryMazeTask(random_goal_maze.NullGoalMaze):
             target = self._targets[0]
             self._rewarded_this_step = True
             if target.activated:
-                self._current_reward = 5 #self._target_reward_scale * 15 
+                self._current_reward = 0.0 # alternative: self._target_reward_scale * 5
                 target.reset(physics)
             else:
-                self._current_reward = -target_distance #self._target_reward_scale * (self._last_distance_from_target - target_distance)
-                self._last_distance_from_target = target_distance
+                self._current_reward = -target_distance 
+                #self._current_reward = self._target_reward_scale * (self._last_distance_from_target - target_distance)
+                #self._last_distance_from_target = target_distance
                 
         else: 
             for i, target in enumerate(self._targets):
