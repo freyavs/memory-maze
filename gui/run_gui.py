@@ -33,7 +33,7 @@ def get_keymap(env):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--env', type=str, default='memory_maze:MemoryMaze-custom-HD-v0')
+    parser.add_argument('--env', type=str, default='memory_maze:MemoryMaze-custom-discrete-HD-v0')
     parser.add_argument('--size', type=int, nargs=2, default=(600, 600))
     parser.add_argument('--fps', type=int, default=6)
     parser.add_argument('--random', type=float, default=0.0)

@@ -74,6 +74,7 @@ def _memory_maze(
     random_state = np.random.RandomState(seed)
     wall_colors_style1 = [FixedWallTexture('style_01', color) for color in ['blue', 'cerise', 'green_bright', 'green', 'purple', 'red_bright', 'yellow']]
     wall_colors_style2 = [FixedWallTexture('style_02', color) for color in ['lgreen', 'dblue']] 
+    wall_colors_style = [FixedWallTexture('style_01', 'yellow') for i in range(10)]
     walker = RollingBallWithFriction(camera_height=0.3, add_ears=top_camera)
     arena = MazeWithTargetsArena(
         x_cells=maze_size + 2,  # inner size => outer size
@@ -89,7 +90,7 @@ def _memory_maze(
         wall_textures=dict({
             '*': FixedWallTexture('style_01', 'yellow'),  # default wall
         }, 
-        **{str(i): wall_color for i, wall_color in enumerate(wall_colors_style1+wall_colors_style2)},
+        **{str(i): wall_color for i, wall_color in enumerate(wall_colors_style)},
         #**{str(i): labmaze_textures.WallTextures('style_01') for i in range(10)},
         ),
         skybox_texture=None,
@@ -151,9 +152,9 @@ def _memory_maze(
 
     if discrete_actions:
         env = DiscreteActionSetWrapper(env, [
-            np.array([-1.0, 0.0]),  # forward
-            np.array([0.0, -1.0]),  # left
-            np.array([0.0, +1.0]),  # right
+            np.array([-0.8, 0.0]),  # forward
+            np.array([0.0, -0.5]),  # left
+            np.array([0.0, +0.5]),  # right
         ])
 
     return env
