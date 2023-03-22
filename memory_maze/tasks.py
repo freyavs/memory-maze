@@ -90,7 +90,7 @@ def _memory_maze(
         wall_textures=dict({
             '*': FixedWallTexture('style_01', 'yellow'),  # default wall
         }, 
-        **{str(i): wall_color for i, wall_color in enumerate(wall_colors_style)},
+        **{str(i): wall_color for i, wall_color in enumerate(wall_colors_style1+wall_colors_style2)},
         #**{str(i): labmaze_textures.WallTextures('style_01') for i in range(10)},
         ),
         skybox_texture=None,
@@ -152,9 +152,9 @@ def _memory_maze(
 
     if discrete_actions:
         env = DiscreteActionSetWrapper(env, [
-            np.array([-0.8, 0.0]),  # forward
-            np.array([0.0, -0.5]),  # left
-            np.array([0.0, +0.5]),  # right
+            np.array([-1.0, 0.0]),  # forward
+            np.array([0.0, -1.0]),  # left
+            np.array([0.0, +1.0]),  # right
         ])
 
     return env
