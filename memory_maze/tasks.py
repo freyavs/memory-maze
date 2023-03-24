@@ -101,8 +101,8 @@ def _memory_maze(
         walker=walker,
         maze_arena=arena,
         n_targets=n_targets,
-        target_radius=0.2,
-        target_height_above_ground=0.5 if good_visibility else 0.5,
+        target_radius=0.4,
+        target_height_above_ground=-0.1 if good_visibility else -0.1,
         enable_global_task_observables=True,  # Always add to underlying env, but not always expose in RemapObservationWrapper
         control_timestep=1.0 / control_freq,
         camera_resolution=camera_resolution,
