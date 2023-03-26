@@ -17,11 +17,12 @@ try:
     import gym
     from gym.envs.registration import register
 
-    from .gym_wrappers import GymWrapper
+    from .gym_wrappers import GymWrapper, GymDreamerWrapper
 
     def _make_gym_env(dm_task: Callable[[], dm_env.Environment], **kwargs):
         dmenv = dm_task(**kwargs)
-        return GymWrapper(dmenv)
+        #todo: gebruik van GymDreamerWrapper niet hardcoden
+        return GymDreamerWrapper(dmenv)
 
     sizes = {
         'custom': tasks.memory_maze_custom,
@@ -41,6 +42,7 @@ try:
         
         # Extra global observables (dict obs space)
         register(id=f'MemoryMaze-{key}-ExtraObs-v0', entry_point=f(_make_gym_env, dm_task, global_observables=True))
+        register(id=f'MemoryMaze-{key}-ExtraObs-HD-v0', entry_point=f(_make_gym_env, dm_task, camera_resolution=256, global_observables=True))
         register(id=f'MemoryMaze-{key}-ExtraObs-Vis-v0', entry_point=f(_make_gym_env, dm_task, global_observables=True, good_visibility=True))
         register(id=f'MemoryMaze-{key}-ExtraObs-Top-v0', entry_point=f(_make_gym_env, dm_task, global_observables=True, camera_resolution=256, top_camera=True))
         
