@@ -84,7 +84,6 @@ class GymDreamerWrapper(gym.Env):
             smell_value = smell_range - distance
 
         observation = {"image": ts.observation["image"], "smell": smell_value}
-        print(observation)
 
         return observation, ts.reward, done, info
 
