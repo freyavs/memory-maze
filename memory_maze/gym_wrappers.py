@@ -49,7 +49,7 @@ class GymDreamerWrapper(gym.Env):
     def reset(self) -> Any:
         ts = self.env.reset()
         self.state = ts.observation
-        return ts.observation
+        return self._transform_observation(ts)
     
     def render(self, mode = "human"):
         if mode == "human":
@@ -78,17 +78,17 @@ class GymDreamerWrapper(gym.Env):
         info["terminal"] = terminal
         info["target_reached"] = ts.reward == 0 
 
-        distance = abs(int(ts.reward)) # else use target_pos and agent_pos
+        return self._transform_observation(ts), ts.reward, done, info
+
+    def _transform_observation(self, ts):
+        distance = abs(int(ts.reward or 4)) # else use target_pos and agent_pos
         smell_range = 3 
         smell_value = 0
         if distance < smell_range:
             smell_value = smell_range - distance
 
         observation = {"image": ts.observation["image"], "smell": [smell_value]}
-        print(observation)
-
-        return observation, ts.reward, done, info
-
+        return observation
 
 def _convert_to_space(spec: Any) -> gym.Space:
     # Inverse of acme.gym_wrappers._convert_to_spec
