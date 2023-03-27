@@ -87,7 +87,7 @@ class GymDreamerWrapper(gym.Env):
         if distance < smell_range:
             smell_value = smell_range - distance
 
-        observation = {"image": ts.observation["image"], "smell": [smell_value]}
+        observation = {"image": ts.observation["image"], "smell": np.array([smell_value])}
         return observation
 
 def _convert_to_space(spec: Any) -> gym.Space:
