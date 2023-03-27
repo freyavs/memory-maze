@@ -49,7 +49,9 @@ class GymDreamerWrapper(gym.Env):
     def reset(self) -> Any:
         ts = self.env.reset()
         self.state = ts.observation
-        return self._transform_observation(ts)
+        obs = self._transform_observation(ts)
+        print(obs)
+        return obs
     
     def render(self, mode = "human"):
         if mode == "human":
@@ -81,11 +83,14 @@ class GymDreamerWrapper(gym.Env):
         return self._transform_observation(ts), ts.reward, done, info
 
     def _transform_observation(self, ts):
-        distance = abs(int(ts.reward or 4)) # else use target_pos and agent_pos
-        smell_range = 3 
-        smell_value = 0
-        if distance < smell_range:
-            smell_value = smell_range - distance
+        if ts.reward is None:
+            smell_value = 0
+        else:
+            distance = abs(int(ts.reward)) # else use target_pos and agent_pos
+            smell_range = 5 
+            smell_value = 0
+            if distance < smell_range:
+                smell_value = smell_range - distance
 
         observation = {"image": ts.observation["image"], "smell": np.array([smell_value])}
         return observation
