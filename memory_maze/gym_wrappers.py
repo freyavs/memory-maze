@@ -36,14 +36,15 @@ class GymDreamerWrapper(gym.Env):
     def __init__(self, env: dm_env.Environment):
         self.env = env
         self.action_space = _convert_to_space(env.action_spec())
-        self.observation_space = _convert_to_space(env.observation_spec())
+        self.observation_space = _convert_to_space(self.observation_spec())
         self.state = None
     
     def action_spec(self):
         return self.env.action_spec()
 
     def observation_spec(self):
-        return self.env.observation_spec()
+        spec = self.env.observation_spec()
+        return {'image': spec['image'], 'smell': specs.BoundedArray((1,), np.uint8, minimum=0, maximum=3)}
 
     def reset(self) -> Any:
         ts = self.env.reset()
@@ -83,7 +84,8 @@ class GymDreamerWrapper(gym.Env):
         if distance < smell_range:
             smell_value = smell_range - distance
 
-        observation = {"image": ts.observation["image"], "smell": smell_value}
+        observation = {"image": ts.observation["image"], "smell": [smell_value]}
+        print(observation)
 
         return observation, ts.reward, done, info
 
