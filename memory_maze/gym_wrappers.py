@@ -45,7 +45,9 @@ class GymDreamerWrapper(gym.Env):
 
     def observation_spec(self):
         spec = self.env.observation_spec()
-        return {'image': spec['image'], 'smell': specs.BoundedArray((1,), np.int64, minimum=0, maximum=self.smell_range)}
+        smell_spec = specs.BoundedArray((1,), np.int64, minimum=0, maximum=self.smell_range)
+        touch_spec = specs.BoundedArray((3,), np.int64, minimum=0, maximum=1)
+        return {'image': spec['image'], 'smell': smell_spec, 'touch': touch_spec}
 
     def reset(self) -> Any:
         ts = self.env.reset()
@@ -83,6 +85,12 @@ class GymDreamerWrapper(gym.Env):
         return self._transform_observation(ts), ts.reward, done, info
 
     def _transform_observation(self, ts):
+        smell = np.array([self._calculate_smell(ts)])
+        touch = np.array(self._calculate_touch(ts))
+        observation = {"image": ts.observation["image"], "smell": smell, "touch": touch}
+        return observation
+    
+    def _calculate_smell(self, ts):
         if ts.reward is None:
             smell_value = 0
         else:
@@ -91,9 +99,53 @@ class GymDreamerWrapper(gym.Env):
             smell_value = 0
             if distance < smell_range:
                 smell_value = smell_range - distance
+            
+        return smell_value
+    
+    def _calculate_touch(self, ts):
+        agent_dir = ts.observation["agent_dir"]
+        agent_pos = ts.observation["agent_pos"]
+        maze_layout = ts.observation["maze_layout"]
 
-        observation = {"image": ts.observation["image"], "smell": np.array([smell_value])}
-        return observation
+        agent_main_dir = np.argmax(np.abs(agent_dir))
+        agent_dir[1-agent_main_dir] = 0
+        agent_dir = np.rint(agent_dir)
+
+        # todo: dont use clipping as agent grid position is slightly off
+        agent_pos = np.clip(np.rint(agent_pos).astype(int), 0, maze_layout.shape[0]-1)
+
+        dir_x, dir_y = agent_dir 
+        agent_x, agent_y = agent_pos
+
+        left = (0, dir_x) if dir_x else (-dir_y, 0)
+        right = (0, -dir_x) if dir_x else (dir_y, 0)
+
+        forward_pos_x, forward_pos_y = (agent_pos + agent_dir).astype(int)
+        left_pos_x, left_pos_y = (agent_pos + left).astype(int)
+        right_pos_x, right_pos_y = (agent_pos + right).astype(int)
+
+        # debugging
+        #maze_layout = np.ones(maze_layout.shape)
+        #maze_layout[agent_y][agent_x] = 2 
+        #print(maze_layout)
+
+        if forward_pos_x < 0 or forward_pos_y < 0 or forward_pos_x >= maze_layout.shape[0] or forward_pos_y >= maze_layout.shape[1]:
+            wall_forward = 1 
+        else:
+            wall_forward = 1 - maze_layout[forward_pos_y][forward_pos_x]
+
+        if left_pos_x < 0 or left_pos_y < 0 or left_pos_x >= maze_layout.shape[0] or left_pos_y >= maze_layout.shape[1]:
+            wall_left = 1 
+        else:
+            wall_left = 1 - maze_layout[left_pos_y][left_pos_x]
+
+        if right_pos_x < 0 or right_pos_y < 0 or right_pos_x >= maze_layout.shape[0] or right_pos_y >= maze_layout.shape[1]:
+            wall_right = 1
+        else:
+            wall_right = 1 - maze_layout[right_pos_y][right_pos_x]
+        
+        return [wall_forward,wall_left,wall_right]
+
 
 def _convert_to_space(spec: Any) -> gym.Space:
     # Inverse of acme.gym_wrappers._convert_to_spec
