@@ -50,7 +50,6 @@ class GymDreamerWrapper(gym.Env):
         ts = self.env.reset()
         self.state = ts.observation
         obs = self._transform_observation(ts)
-        print(obs)
         return obs
     
     def render(self, mode = "human"):
