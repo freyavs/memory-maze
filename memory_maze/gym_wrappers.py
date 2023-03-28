@@ -35,6 +35,7 @@ class GymDreamerWrapper(gym.Env):
 
     def __init__(self, env: dm_env.Environment):
         self.env = env
+        self.smell_range = 5
         self.action_space = _convert_to_space(env.action_spec())
         self.observation_space = _convert_to_space(self.observation_spec())
         self.state = None
@@ -44,7 +45,7 @@ class GymDreamerWrapper(gym.Env):
 
     def observation_spec(self):
         spec = self.env.observation_spec()
-        return {'image': spec['image'], 'smell': specs.BoundedArray((1,), np.uint8, minimum=0, maximum=3)}
+        return {'image': spec['image'], 'smell': specs.BoundedArray((1,), np.uint8, minimum=0, maximum=self.smell_range)}
 
     def reset(self) -> Any:
         ts = self.env.reset()
@@ -86,7 +87,7 @@ class GymDreamerWrapper(gym.Env):
             smell_value = 0
         else:
             distance = abs(int(ts.reward)) # else use target_pos and agent_pos
-            smell_range = 5 
+            smell_range = self.smell_range 
             smell_value = 0
             if distance < smell_range:
                 smell_value = smell_range - distance
