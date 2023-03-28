@@ -45,7 +45,7 @@ class GymDreamerWrapper(gym.Env):
 
     def observation_spec(self):
         spec = self.env.observation_spec()
-        return {'image': spec['image'], 'smell': specs.BoundedArray((1,), np.uint8, minimum=0, maximum=self.smell_range)}
+        return {'image': spec['image'], 'smell': specs.BoundedArray((1,), np.int64, minimum=0, maximum=self.smell_range)}
 
     def reset(self) -> Any:
         ts = self.env.reset()
