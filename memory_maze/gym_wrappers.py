@@ -91,7 +91,7 @@ class GymDreamerWrapper(gym.Env):
         obs["target_pos"] = ts.observation["target_pos"]
         obs["maze_layout"] = ts.observation["maze_layout"]
 
-        return self._transform_observation(ts), ts.reward, done, info
+        return obs, ts.reward, done, info
 
     def _transform_observation(self, ts):
         smell = np.array([self._calculate_smell(ts)])
