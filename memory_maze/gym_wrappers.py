@@ -73,7 +73,7 @@ class GymDreamerWrapper(gym.Env):
         info = {}
         if done and not terminal:
             info['TimeLimit.truncated'] = True  # acme.GymWrapper understands this and converts back to dm_env.truncation()
-        
+
         # set extra parameters for dreamer
         info["last"] = ts.last()
         info["first"] = ts.first()
@@ -81,6 +81,9 @@ class GymDreamerWrapper(gym.Env):
         info["done"] = done
         info["terminal"] = terminal
         info["target_reached"] = ts.reward == 0 
+        info["agent_pos"] = ts.observation["agent_pos"]
+        info["target_pos"] = ts.observation["target_pos"]
+        info["maze_layout"] = ts.observation["maze_layout"]
 
         return self._transform_observation(ts), ts.reward, done, info
 
