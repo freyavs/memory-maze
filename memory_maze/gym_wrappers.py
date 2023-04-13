@@ -53,6 +53,9 @@ class GymDreamerWrapper(gym.Env):
         ts = self.env.reset()
         self.state = ts.observation
         obs = self._transform_observation(ts)
+        obs["agent_pos"] = ts.observation["agent_pos"]
+        obs["target_pos"] = ts.observation["target_pos"]
+        obs["maze_layout"] = ts.observation["maze_layout"]
         return obs
     
     def render(self, mode = "human"):
