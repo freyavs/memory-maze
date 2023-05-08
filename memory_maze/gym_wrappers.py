@@ -6,7 +6,6 @@ import gym
 from dm_env import specs
 from gym import spaces
 import cv2
-import math
 
 class GymWrapper(gym.Env):
 
@@ -35,7 +34,7 @@ class GymDreamerWrapper(gym.Env):
 
     def __init__(self, env: dm_env.Environment):
         self.env = env
-        self.smell_range = 5
+        self.smell_range = 4
         self.action_space = _convert_to_space(env.action_spec())
         self.observation_space = _convert_to_space(self.observation_spec())
         self.state = None
@@ -61,7 +60,7 @@ class GymDreamerWrapper(gym.Env):
     
     def render(self, mode = "human"):
         if mode == "human":
-            rgb_state = cv2.cvtColor(self.state, cv2.COLOR_BGR2RGB)
+            rgb_state = cv2.cvtColor(self.state['image'], cv2.COLOR_BGR2RGB)
             cv2.imshow("Environment state", rgb_state)
             cv2.waitKey(0)
         else:
@@ -103,12 +102,12 @@ class GymDreamerWrapper(gym.Env):
         if ts.reward is None:
             smell_value = 0
         else:
-            distance = abs(int(ts.reward)) # else use target_pos and agent_pos
+            distance = abs(int(np.round(ts.reward))) # else use target_pos and agent_pos
             smell_range = self.smell_range 
             smell_value = 0
             if distance < smell_range:
                 smell_value = smell_range - distance
-            
+
         return smell_value
     
     def _calculate_touch(self, ts):
@@ -120,7 +119,7 @@ class GymDreamerWrapper(gym.Env):
         agent_dir[1-agent_main_dir] = 0
         agent_dir = np.rint(agent_dir)
 
-        # todo: dont use clipping as agent grid position is slightly off
+        agent_pos = (agent_pos[0]-0.5, agent_pos[1]-0.5)
         agent_pos = np.clip(np.rint(agent_pos).astype(int), 0, maze_layout.shape[0]-1)
 
         dir_x, dir_y = agent_dir 
