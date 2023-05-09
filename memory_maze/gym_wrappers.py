@@ -34,7 +34,7 @@ class GymDreamerWrapper(gym.Env):
 
     def __init__(self, env: dm_env.Environment):
         self.env = env
-        self.smell_range = 4
+        self.smell_range = 5 
         self.action_space = _convert_to_space(env.action_spec())
         self.observation_space = _convert_to_space(self.observation_spec())
         self.state = None
