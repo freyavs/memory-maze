@@ -34,7 +34,7 @@ class GymDreamerWrapper(gym.Env):
 
     def __init__(self, env: dm_env.Environment):
         self.env = env
-        self.smell_range = 3 
+        self.smell_range = 4 
         self.action_space = _convert_to_space(env.action_spec())
         self.observation_space = _convert_to_space(self.observation_spec())
         self.state = None
@@ -96,13 +96,14 @@ class GymDreamerWrapper(gym.Env):
         smell = np.array([self._calculate_smell(ts)])
         touch = np.array(self._calculate_touch(ts))
         observation = {"image": ts.observation["image"], "smell": smell, "touch": touch}
+        print(observation)
         return observation
     
     def _calculate_smell(self, ts):
         if ts.reward is None:
             smell_value = 0
         else:
-            distance = abs(int(np.round(ts.reward))) # else use target_pos and agent_pos
+            distance = abs(int(np.round(ts.reward-0.2))) # else use target_pos and agent_pos
             smell_range = self.smell_range 
             smell_value = 0
             if distance < smell_range:
