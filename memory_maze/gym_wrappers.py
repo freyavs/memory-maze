@@ -96,7 +96,6 @@ class GymDreamerWrapper(gym.Env):
         smell = np.array([self._calculate_smell(ts)])
         touch = np.array(self._calculate_touch(ts))
         observation = {"image": ts.observation["image"], "smell": smell, "touch": touch}
-        print(observation)
         return observation
     
     def _calculate_smell(self, ts):
