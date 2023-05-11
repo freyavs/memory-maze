@@ -27,6 +27,7 @@ try:
     sizes = {
         'custom': tasks.memory_maze_custom,
         'custom-7x7': tasks.memory_maze_custom_7x7,
+        'custom-9x9': tasks.memory_maze_custom_9x9,
         'custom-discrete': tasks.memory_maze_custom_discrete,
         '9x9': tasks.memory_maze_9x9,
         '11x11': tasks.memory_maze_11x11,

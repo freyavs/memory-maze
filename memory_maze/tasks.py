@@ -16,6 +16,9 @@ def memory_maze_custom(**kwargs):
 def memory_maze_custom_7x7(**kwargs):
     return _memory_maze(7, 1, 40, max_rooms=1, room_min_size=7, room_max_size=7, discrete_actions=False, **kwargs)
 
+def memory_maze_custom_9x9(**kwargs):
+    return _memory_maze(9, 1, 50, max_rooms=1, room_min_size=9, room_max_size=9, discrete_actions=False, **kwargs)
+
 def memory_maze_custom_discrete(**kwargs):
     return _memory_maze(5, 1, 25, max_rooms=1, room_min_size=5, room_max_size=5, discrete_actions=True, **kwargs)
 
