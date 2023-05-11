@@ -11,10 +11,13 @@ from memory_maze.wrappers import *
 DEFAULT_CONTROL_FREQ = 4.0
 
 def memory_maze_custom(**kwargs):
-    return _memory_maze(7, 1, 50, max_rooms=1, room_min_size=7, room_max_size=7, discrete_actions=False, **kwargs)
+    return _memory_maze(5, 1, 25, max_rooms=1, room_min_size=5, room_max_size=5, discrete_actions=False, **kwargs)
+
+def memory_maze_custom_7x7(**kwargs):
+    return _memory_maze(7, 1, 40, max_rooms=1, room_min_size=7, room_max_size=7, discrete_actions=False, **kwargs)
 
 def memory_maze_custom_discrete(**kwargs):
-    return _memory_maze(7, 1, 50, max_rooms=1, room_min_size=7, room_max_size=7, discrete_actions=True, **kwargs)
+    return _memory_maze(5, 1, 25, max_rooms=1, room_min_size=5, room_max_size=5, discrete_actions=True, **kwargs)
 
 def memory_maze_9x9(**kwargs):
     """
