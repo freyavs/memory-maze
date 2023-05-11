@@ -102,7 +102,7 @@ class GymDreamerWrapper(gym.Env):
         if ts.reward is None:
             smell_value = 0
         else:
-            distance = abs(int(np.round(ts.reward+0.2))) # else use target_pos and agent_pos
+            distance = abs(int(np.round(ts.reward-0.2))) # else use target_pos and agent_pos
             smell_range = self.smell_range 
             smell_value = 0
             if distance < smell_range:
